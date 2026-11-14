@@ -1,0 +1,19 @@
+check,count,action,detail
+registros_recebidos,207090,informativo,
+datas_invalidas,0,registros removidos,
+datas_futuras,27,registros removidos,
+estados_nao_reconhecidos,0,registros removidos,
+estados_com_grafia_normalizada,0,convertidos para sigla UF,
+valores_nao_numericos,0,convertidos para ausente,
+valores_ausentes_na_origem,0,mantidos como ausentes,
+negativos_por_arredondamento,0,ajustados para 0,
+valores_negativos,0,convertidos para ausente,
+valores_acima_do_limite_fisico,0,convertidos para ausente,limite = 700 mm/dia
+identificadores_ponto_ausentes,0,substituídos pela sigla da UF,
+duplicatas_exatas,0,removidas (mantido o 1º registro),
+duplicatas_conflitantes,0,média dos valores do mesmo estado/dia (ponto),
+pontos_de_referencia_preservados,27,séries mantidas separadas por UF e identificador do ponto,
+estados_sem_nenhum_dado,0,informativo,
+sequencias_valores_identicos_suspeitas,0,apenas sinalizado,>= 5 dias consecutivos > 0 com o mesmo valor
+meses_incompletos,27,excluídos das estatísticas (precip_mm = NaN),de 6804 estado-meses
+anos_incompletos,27,excluídos das estatísticas anuais e de tendência,de 567 estado-anos
