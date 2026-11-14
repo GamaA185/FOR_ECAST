@@ -1,20 +1,29 @@
 import pandas as pd
 from pathlib import Path
 
-# Caminhos
-PROJECT_ROOT= Path(__file__).resolve().parents[2]
+
+from pathlib import Path
+import pandas as pd
+
+# Project paths
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DATA_PATH = (
     PROJECT_ROOT
-    / "data"
     / "precipitation"
     / "processed"
-    / "monthly_precipitation_27points_2005_2025.csv"
+    / "precipitacao_mensal_27_pontos_2005_2025.csv"
 )
+
+print("Project root:", PROJECT_ROOT)
+print("Data path:", DATA_PATH)
+print("File exists:", DATA_PATH.exists())
+
 
 def load_data():
     df = pd.read_csv(DATA_PATH)
     return df
+
 
 def prepare_data(df):
     # Cleaning of "Cria"
@@ -52,7 +61,7 @@ def validade_data(df):
 
     #Duplicates
     duplicates = df.duplicated(
-        subset= ["pontos_id", "data_inicios"]
+        subset= ["ponto_id", "data_inicio"]
     ).sum()
 
     print("Duplicates:", duplicates)
@@ -97,10 +106,9 @@ def main():
 
     output_path = (
         PROJECT_ROOT
-        / "data"
         / "precipitation"
         / "processed"
-        / "monthly_precipitation_27points_2005_2025_cleaned.csv"
+        / "precipitacao_mensal_27_pontos_2005_2025_cleaned.csv"
     )
 
     df.to_csv(output_path, index=False)

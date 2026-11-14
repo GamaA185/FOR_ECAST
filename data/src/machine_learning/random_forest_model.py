@@ -12,7 +12,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DATA_PATH = (
     PROJECT_ROOT
-    / "data"
     / "precipitation"
     / "processed"
     / "monthly_precipitation_features.csv"
@@ -126,6 +125,45 @@ def train_model(X_train, y_train):
 
     return model
 
+
+def calculate_feature_importance(model, feature_columns):
+    """Calculate and save Random Forest feature importance."""
+
+    importance_df = pd.DataFrame({
+        "feature": feature_columns,
+        "importance": model.feature_importances_
+    })
+
+    importance_df = importance_df.sort_values(
+        by="importance",
+        ascending=False
+    )
+
+    importance_dir = OUTPUT_DIR / "feature_importance"
+
+    importance_dir.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    output_path = (
+        importance_dir / "random_forest_feature_importance.csv"
+    )
+
+    importance_df.to_csv(
+        output_path,
+        index=False
+    )
+
+    print("\n--- FEATURE IMPORTANCE ---")
+
+    print(
+        importance_df.head(15).to_string(index=False)
+    )
+
+    print("\nFeature importance saved to:", output_path)
+
+    return importance_df
 
 def generate_predictions(model, X_test, test_data):
     
@@ -267,6 +305,10 @@ def main():
     print("\nTraining model...")
 
     model = train_model(X_train, y_train)
+    feature_importance = calculate_feature_importance(
+    model,
+    feature_columns
+)
 
     predictions = generate_predictions(
         model,

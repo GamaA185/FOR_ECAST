@@ -8,15 +8,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DATA_PATH = (
     PROJECT_ROOT
-    / "data"
     / "precipitation"
     / "processed"
-    / "monthly_precipitation_ml_ready.csv"
+    / "precipitacao_mensal_27_pontos_2005_2025_cleaned.csv"
 )
 
 OUTPUT_PATH = (
     PROJECT_ROOT
-    / "data"
     / "precipitation"
     / "processed"
     / "monthly_precipitation_features.csv"
