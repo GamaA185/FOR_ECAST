@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore rainfall history, anomalies, seasonal patterns, trends, and model results across Brazil."
+    />
+    <title>EarthScope | Brazil rainfall observatory</title>
+    <link rel="stylesheet" href="styles.css?v=dashboard-polish" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar" aria-label="Dashboard controls">
+      <a class="brand" href="#overview">
+        <span class="brand-kicker">EARTHSCOPE · BRAZIL</span>
+        <span class="brand-title">Rainfall observatory</span>
+      </a>
+
+      <nav class="navigation" aria-label="Dashboard sections">
+        <span class="nav-label">EXPLORE</span>
+        <a href="#overview">Overview</a>
+        <a href="#indicators">General indicators</a>
+        <a href="#history">Precipitation history</a>
+        <a href="#seasonality">Seasonality &amp; categories</a>
+        <a href="#anomalies">Anomalies &amp; trends</a>
+        <a href="#models">Model evaluation</a>
+        <a href="#methodology">Methods &amp; quality</a>
+      </nav>
+
+      <div class="filter-group">
+        <label for="state">Primary state</label>
+        <select id="state" disabled>
+          <option>Loading data…</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="reference-year">Annual indicator year</label>
+        <select id="reference-year" disabled></select>
+      </div>
+
+      <label class="toggle-control" for="compare-state-enabled">
+        <input id="compare-state-enabled" type="checkbox" disabled />
+        <span>Compare another state</span>
+      </label>
+      <div id="compare-state-group" class="filter-group" hidden>
+        <label for="compare-state">State to compare</label>
+        <select id="compare-state" disabled></select>
+      </div>
+
+      <div class="filter-group">
+        <label for="frequency">Time resolution</label>
+        <select id="frequency" disabled>
+          <option value="annual">Years</option>
+          <option value="monthly">Months</option>
+          <option value="daily">Days</option>
+        </select>
+      </div>
+
+      <fieldset class="range-filter">
+        <legend>Selected period</legend>
+        <div class="period-inputs">
+          <label for="period-start">From</label>
+          <input id="period-start" type="number" disabled />
+          <label for="period-end">Through</label>
+          <input id="period-end" type="number" disabled />
+        </div>
+      </fieldset>
+
+      <label class="toggle-control" for="compare-period-enabled">
+        <input id="compare-period-enabled" type="checkbox" disabled />
+        <span>Compare a second period</span>
+      </label>
+      <fieldset id="compare-period-group" class="range-filter compare-period-group" hidden>
+        <legend>Comparison period</legend>
+        <div class="period-inputs">
+          <label for="compare-period-start">From</label>
+          <input id="compare-period-start" type="number" disabled />
+          <label for="compare-period-end">Through</label>
+          <input id="compare-period-end" type="number" disabled />
+        </div>
+      </fieldset>
+
+      <div class="sidebar-bottom">
+        <span>DATA REFERENCE</span>
+        <strong id="dataset-period">2005–2025</strong>
+        <span id="sidebar-status" role="status">Loading analysis data…</span>
+        <button id="reset-filters" class="quiet-button" type="button" disabled>Reset filters</button>
+        <button id="download" class="download-button" type="button" disabled>Export filtered data</button>
+      </div>
+    </aside>
+
+    <main id="overview">
+      <header class="topbar">
+        <span class="reference-pill">Historical reference · <span id="reference-period">2005–2025</span></span>
+      </header>
+      <div class="title-row">
+        <div>
+          <h1>Rainfall, in perspective.</h1>
+        </div>
+        <a class="method-link" href="#methodology">How to interpret ↘</a>
+      </div>
+
+      <div id="load-error" class="load-error" role="alert" hidden></div>
+      <div id="content" hidden>
+        <section id="indicators" aria-labelledby="indicators-title">
+          <div class="section-heading">
+            <h2 id="indicators-title">General indicators</h2>
+          </div>
+          <div class="metrics">
+            <article class="metric-card">
+              <span>Annual precipitation total</span>
+              <strong id="annual-total">—</strong>
+              <small id="annual-period"></small>
+            </article>
+            <article class="metric-card">
+              <span>Historical monthly average</span>
+              <strong id="monthly-average">—</strong>
+              <small id="monthly-average-note"></small>
+            </article>
+            <article class="metric-card">
+              <span>Wettest month</span>
+              <strong id="wettest-month">—</strong>
+              <small id="wettest-month-note"></small>
+            </article>
+            <article class="metric-card">
+              <span>Driest month</span>
+              <strong id="driest-month">—</strong>
+              <small id="driest-month-note"></small>
+            </article>
+            <article class="metric-card metric-card-anomaly">
+              <span>Selected-period anomaly</span>
+              <strong id="period-anomaly">—</strong>
+              <small id="period-anomaly-note"></small>
+            </article>
+          </div>
+        </section>
+
+        <section id="history" class="dashboard-section" aria-labelledby="history-title">
+          <div class="section-heading">
+            <h2 id="history-title">Precipitation history</h2>
+          </div>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3 id="history-heading">Annual precipitation</h3>
+                <p id="history-description">Hover over the chart to inspect values.</p>
+              </div>
+              <div id="history-legend" class="legend"></div>
+            </div>
+            <div class="chart-shell">
+              <div id="history-tooltip" class="chart-tooltip" role="status" hidden></div>
+              <div id="history-chart" class="chart"></div>
+            </div>
+            <p id="history-note" class="chart-note"></p>
+          </article>
+        </section>
+
+        <section id="seasonality" class="dashboard-section">
+          <div class="section-heading">
+            <h2>Seasonality and classification</h2>
+            <span class="muted">Typical patterns. Unusual periods.</span>
+          </div>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>The rainfall cycle</h3>
+                <p>Monthly mean, median, and P10–P90 historical range.</p>
+              </div>
+              <div class="legend" aria-label="Climatology chart legend">
+                <span><i class="legend-key legend-range"></i>P10–P90</span>
+                <span><i class="legend-key legend-mean"></i>Mean</span>
+                <span><i class="legend-key legend-median"></i>Median</span>
+              </div>
+            </div>
+            <div id="climate-chart" class="chart"></div>
+            <p class="chart-note">The P10–P90 band shows historical variation across years; it is not a confidence interval.</p>
+          </article>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Each month in context</h3>
+                <p>Classified against the same calendar month and reference point.</p>
+              </div>
+              <span id="grid-period" class="small-pill"></span>
+            </div>
+            <div id="category-legend" class="legend categories"></div>
+            <div class="heatmap-scroll">
+              <table id="heatmap" aria-label="Monthly precipitation classification by year"></table>
+            </div>
+            <p id="cell-detail" class="detail" aria-live="polite">Select a cell to inspect rainfall totals and historical thresholds.</p>
+          </article>
+        </section>
+
+        <section id="anomalies" class="dashboard-section">
+          <div class="section-heading">
+            <h2>Anomalies and trends</h2>
+            <span class="muted">Individual departures and long-term patterns.</span>
+          </div>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Above or below the historical average?</h3>
+                <p id="anomaly-subtitle"></p>
+              </div>
+              <div class="chart-controls">
+                <label class="visually-hidden" for="anomaly-frequency">Anomaly time resolution</label>
+                <select id="anomaly-frequency">
+                  <option value="annual">Annual</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+                <label class="visually-hidden" for="anomaly-unit">Anomaly unit</label>
+                <select id="anomaly-unit">
+                  <option value="anomaly_mm">mm</option>
+                  <option value="anomaly_pct">%</option>
+                  <option value="zscore">Z-score</option>
+                </select>
+              </div>
+            </div>
+            <div class="legend">
+              <span><i class="legend-key legend-positive"></i>Above average</span>
+              <span><i class="legend-key legend-negative"></i>Below average</span>
+            </div>
+            <div id="anomaly-chart" class="chart"></div>
+            <p class="chart-note">An anomaly describes a historical departure, not its cause. A Z-score is neither SPI nor a significance test.</p>
+          </article>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Is rainfall changing?</h3>
+                <p id="trend-period"></p>
+              </div>
+              <span id="trend-badge" class="small-pill"></span>
+            </div>
+            <div class="trend-metrics">
+              <div><span>Sen’s slope</span><strong id="slope">—</strong><small id="direction"></small></div>
+              <div><span>Mann–Kendall p-value</span><strong id="mk-p">—</strong><small>Original two-sided test</small></div>
+              <div><span>BH-adjusted p-value</span><strong id="bh-p">—</strong><small>Joint inference across 27 points</small></div>
+            </div>
+            <div id="trend-chart" class="chart"></div>
+            <p id="trend-reading" class="detail"></p>
+            <details>
+              <summary>View statistical details</summary>
+              <div id="trend-details"></div>
+            </details>
+          </article>
+        </section>
+
+        <section id="models" class="dashboard-section">
+          <div class="section-heading">
+            <h2>Machine-learning evaluation</h2>
+            <span class="muted">Monthly forecasts · held-out and recursive backtests.</span>
+          </div>
+          <div class="model-metrics">
+            <article class="card">
+              <span>Random Forest · average MAE</span>
+              <strong id="rf-mae">—</strong>
+              <small>Across the 27-state test set</small>
+            </article>
+            <article class="card">
+              <span>Seasonal naive · average MAE</span>
+              <strong id="baseline-mae">—</strong>
+              <small>Same test samples as Random Forest</small>
+            </article>
+            <article class="card">
+              <span>MAE improvement</span>
+              <strong id="mae-improvement">—</strong>
+              <small id="model-wins"></small>
+            </article>
+          </div>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Forecast errors by state</h3>
+                <p>Mean absolute error · lower is better.</p>
+              </div>
+              <div class="legend">
+                <span><i class="legend-key legend-baseline"></i>Seasonal naive</span>
+                <span><i class="legend-key legend-model"></i>Random Forest</span>
+              </div>
+            </div>
+            <div id="model-state-chart" class="chart"></div>
+          </article>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Recursive backtest by forecast horizon</h3>
+                <p>Monthly forecasts made one step at a time; performance varies by state.</p>
+              </div>
+            </div>
+            <div id="recursive-chart" class="chart"></div>
+            <p id="recursive-note" class="chart-note"></p>
+          </article>
+        </section>
+
+        <section id="methodology" class="dashboard-section">
+          <div class="section-heading">
+            <h2>Methods and data quality</h2>
+          </div>
+          <div class="method-grid">
+            <article class="card">
+              <h3>What these data represent</h3>
+              <p>One precipitation reference point per federal unit. Values are not state-wide spatial averages. Source: Meteomatics API (<code>source=mix</code>); historical source homogeneity has not been established.</p>
+              <p>Trends are exploratory and cannot alone attribute changes to climate or support forecasts.</p>
+              <p id="point-detail"></p>
+            </article>
+            <article class="card">
+              <h3>A consistent reference</h3>
+              <p>Display filters change the visible series. Climatology, monthly categories, and trend inference use the fixed historical reference.</p>
+              <p>At least 10 valid years are required for reference statistics and trend analysis. This record is not a standard 30-year climate normal.</p>
+              <p id="coverage-detail"></p>
+            </article>
+            <article class="card">
+              <h3>Five rainfall categories</h3>
+              <p>Very dry: below P10. Dry: P10 to below P30. Normal: P30 through P70, inclusive. Wet: above P70 through P90. Very wet: above P90.</p>
+              <p>Linear percentiles are calculated by point and calendar month. Tied thresholds may reduce the number of represented categories. “Normal” is a historical range, not a guarantee of no impact.</p>
+            </article>
+            <article class="card">
+              <h3>Quality before statistics</h3>
+              <p id="quality-detail"></p>
+              <p>Incomplete values remain missing, never zero. Monthly totals require all expected daily records; annual totals require all 12 complete months. Machine-learning scores describe held-out model performance, not future guarantees.</p>
+            </article>
+          </div>
+          <article class="card">
+            <div class="card-heading">
+              <div>
+                <h3>Filtered precipitation records</h3>
+                <p id="table-period"></p>
+              </div>
+            </div>
+            <div class="data-scroll">
+              <table id="data-table"></table>
+            </div>
+          </article>
+        </section>
+      </div>
+      <footer>
+        <strong>EarthScope</strong>
+        <span>Data to understand. Context to interpret.</span>
+        <a href="#overview">Back to top ↑</a>
+      </footer>
+    </main>
+  </body>
+</html>
