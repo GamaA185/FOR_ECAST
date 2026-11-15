@@ -527,7 +527,7 @@ function renderClimateChart() {
     return;
   }
   const width = 1000;
-  const height = 260;
+  const height = 442;
   const left = 56;
   const right = 16;
   const top = 16;
@@ -610,15 +610,15 @@ function renderAnomalyChart() {
     return;
   }
   const width = 1000;
-  const height = 235;
+  const height = 517;
   const left = 62;
   const right = 16;
   const top = 14;
-  const zero = 120;
   const bottom = 26;
+  const plotHeight = (height - top - bottom) / 2;
+  const zero = top + plotHeight;
   const max = Math.max(1, ...available.map((row) => Math.abs(Number(row[column])))) * 1.08;
   const plotWidth = width - left - right;
-  const plotHeight = zero - top;
   const y = (value) => zero - Number(value) / max * plotHeight;
   let content = '';
   for (let index = 0; index <= 4; index += 1) {
@@ -673,7 +673,7 @@ function renderTrend() {
   $('trend-reading').textContent = `${direction}. ${significant ? `There is evidence of an ${slope > 0 ? 'increasing' : 'decreasing'} trend after BH adjustment (α = 0.05).` : 'There is insufficient statistical evidence to establish a trend after BH adjustment (α = 0.05).'} The slope is a historical estimate, not a forecast. The selected display period does not recalculate the fixed-reference test.`;
 
   const width = 1000;
-  const height = 245;
+  const height = 539;
   const left = 62;
   const right = 16;
   const top = 14;
@@ -761,7 +761,7 @@ function renderModelEvaluation() {
 
   const horizon = model.recursive_by_horizon;
   const width = 1000;
-  const height = 230;
+  const height = 506;
   const left = 62;
   const right = 18;
   const top = 13;
