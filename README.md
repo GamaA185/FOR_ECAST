@@ -288,3 +288,6 @@ python -m pytest data\src\tests -q
 - [`dashboard/index.html`](dashboard/index.html)
 - [`dashboard/build_dashboard.py`](dashboard/build_dashboard.py)
 - [`dashboard/open_section.py`](dashboard/open_section.py)
+  
+LINK Figma Prototype:
+https://www.figma.com/proto/v1nLmA858CgxVrnf4iLuxT/NASA-Space-Apps?node-id=148-126&p=f&t=fHqQBSGjAnhZ4InG-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=148%3A126&show-proto-sidebar=1
