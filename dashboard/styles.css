@@ -1143,7 +1143,7 @@ footer a {
 
   #seasonality > .card,
   #anomalies > .card {
-    min-height: 100%;
+    min-height: 0;
   }
 
   #models {

@@ -20,7 +20,7 @@ SECTIONS = {
     "ml-evaluation": "models",
     "methods": "methodology",
 }
-PAGE_TITLE = b"<title>EarthScope | Brazil rainfall observatory</title>"
+PAGE_TITLE = b"<title>for_ecast | Brazil rainfall observatory</title>"
 
 
 def is_dashboard_available(url: str) -> bool:

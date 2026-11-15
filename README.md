@@ -3,7 +3,7 @@ Statistical study and machine learning applied to NASA precipitation data for Br
 
 ## Interactive dashboard
 
-The English-language EarthScope dashboard in `dashboard/` combines the precipitation statistics, categories, anomalies, trend analysis, quality summaries, and machine-learning evaluation. It includes the general-indicator cards, historical charts, seasonal climatology, monthly category heatmap, anomaly and trend panels, model backtests, methodology, data inspection, and CSV export.
+The English-language `for_ecast` dashboard in `dashboard/` combines the precipitation statistics, categories, anomalies, trend analysis, quality summaries, and machine-learning evaluation. It includes the general-indicator cards, historical charts, seasonal climatology, monthly category heatmap, anomaly and trend panels, model backtests, methodology, data inspection, and CSV export.
 
 ### Run the dashboard
 

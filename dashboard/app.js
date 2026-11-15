@@ -926,7 +926,7 @@ function exportCsv() {
   const url = URL.createObjectURL(new Blob(['\ufeff', csv], { type: 'text/csv;charset=utf-8' }));
   const link = document.createElement('a');
   link.href = url;
-  link.download = `earthscope_${current.uf.toLowerCase()}_${frequency}_${selectedRange().startInput}_${selectedRange().endInput}.csv`;
+  link.download = `for_ecast_${current.uf.toLowerCase()}_${frequency}_${selectedRange().startInput}_${selectedRange().endInput}.csv`;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
